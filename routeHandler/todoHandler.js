@@ -27,8 +27,7 @@ router.get("/", async (req, res) => {
 //Get a Todo by Id
 router.get("/:id", async (req, res) => {
   try {
-    const todo = await Todo.find({ _id: req.params.id })
-    .select({
+    const todo = await Todo.find({ _id: req.params.id }).select({
       // _id: 0
     });
     res.status(200).json(todo);
@@ -81,6 +80,13 @@ router.put("/:id", async (req, res) => {
 });
 
 //Delete todo
-router.delete("/:id", async (req, res) => {});
+router.delete("/:id", async (req, res) => {
+  try {
+    await Todo.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: "Todo was deleted successfully!" });
+  } catch (err) {
+    res.status(500).json({ error: "There was a server side error!" });
+  }
+});
 
 module.exports = router;
