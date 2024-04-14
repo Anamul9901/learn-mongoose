@@ -32,8 +32,18 @@ router.post("/", async (req, res) => {
   }
 });
 
-//POST mulriple Todo
-router.post("alll", async (req, res) => {});
+// POST multipal todo
+router.post("/all", async (req, res)=>{
+  try{
+    await Todo.insertMany(req.body);
+    res.status(201).json({message: "Todo were created successfully"})
+  }catch(err){
+    console.error(err);
+    res.status(500).json({error: "Server error"})
+  }
+})
+
+
 
 //PUT Todo
 router.put("/:id", async (req, res) => {});
