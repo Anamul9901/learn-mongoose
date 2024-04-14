@@ -5,9 +5,18 @@ const todoSchema = require("../schemas/todoSchema");
 const Todo = new mongoose.model("Todo", todoSchema);
 
 //GET all the todos
+// find er vetor jegular status inactive sodu segula dekhabe.
+//abar select er vetor jegula 0 dua se data gulu dekhabe anh.
+// limit e joto sonkha dua ase toto-ta data dekhabe
 router.get("/", async (req, res) => {
   try {
-    const todos = await Todo.find();
+    const todos = await Todo.find({ status: "inactive" })
+      .select({
+        // _id: 0,
+        date: 0,
+        __v: 0,
+      })
+      .limit(2);
     res.status(200).json(todos);
   } catch (err) {
     console.error(err);
@@ -16,7 +25,18 @@ router.get("/", async (req, res) => {
 });
 
 //Get a Todo by Id
-router.get("/:id", async (req, res) => {});
+router.get("/:id", async (req, res) => {
+  try {
+    const todo = await Todo.find({ _id: req.params.id })
+    .select({
+      // _id: 0
+    });
+    res.status(200).json(todo);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 //POST a Todo
 router.post("/", async (req, res) => {
@@ -59,7 +79,6 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: "There was a server side error!" });
   }
 });
-
 
 //Delete todo
 router.delete("/:id", async (req, res) => {});
